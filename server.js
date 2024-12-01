@@ -1,5 +1,7 @@
 const express = require("express");
 const cors = require("cors");
+require('dotenv').config();
+
 
 const booking = require("./db/booking");
 const Admin = require("./db/admin");
