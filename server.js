@@ -17,6 +17,32 @@ const app = express();
 app.use(express.json());
 app.use(cors({ origin: 'http://localhost:5173' }));
 
+const winston = require('winston');
+
+// Configure logger
+const logger = winston.createLogger({
+  level: 'info', // Set the default log level
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.printf(({ timestamp, level, message }) => {
+      return `${timestamp} [${level}]: ${message}`;
+    })
+  ),
+  transports: [
+    new winston.transports.Console(), // Log to console
+    new winston.transports.File({ filename: 'error.log', level: 'error' }), // Log errors to file
+  ],
+});
+
+// Log server start
+logger.info('Server started');
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  logger.error(`Error occurred at ${req.originalUrl}: ${err.message}`, { stack: err.stack });
+  res.status(500).json({ message: 'Internal Server Error', error: err.message });
+});
+
 // Book Service
 app.post("/bookService", async (req, res) => {
     const newBooking = new booking(req.body);
