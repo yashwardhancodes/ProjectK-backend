@@ -15,7 +15,7 @@ require("./db/config");
 const app = express();
 
 app.use(express.json());
-app.use(cors({ origin: 'http://localhost:5173' }));
+app.use(cors({ origin: 'https://zealous-grass-0d6c91f1e.4.azurestaticapps.net/' }));
 
 const winston = require('winston');
 
