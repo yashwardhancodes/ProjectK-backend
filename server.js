@@ -15,7 +15,23 @@ require("./db/config");
 const app = express();
 
 app.use(express.json());
-app.use(cors({ origin: 'https://zealous-grass-0d6c91f1e.4.azurestaticapps.net/' }));
+const allowedOrigins = [
+    'http://localhost:5173', 
+    'https://zealous-grass-0d6c91f1e.4.azurestaticapps.net',
+  ];
+  
+  const corsOptions = {
+    origin: (origin, callback) => {
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true); 
+      } else {
+        callback(new Error('Not allowed by CORS')); 
+      }
+    },
+    credentials: true, 
+  };
+  
+  app.use(cors(corsOptions));
 
 const winston = require('winston');
 
