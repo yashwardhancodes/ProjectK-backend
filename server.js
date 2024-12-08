@@ -16,10 +16,18 @@ const app = express();
 
 app.use(express.json());
 const allowedOrigins = [
-    'http://localhost:5173', 
-    'https://zealous-grass-0d6c91f1e.4.azurestaticapps.net',
-    
-  ];
+  'http://localhost:5173', 
+  'https://zealous-grass-0d6c91f1e.4.azurestaticapps.net'
+];
+
+const corsOptions = {
+  origin: allowedOrigins,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Specify allowed HTTP methods
+  allowedHeaders: ['Content-Type', 'Authorization'], // Specify allowed headers
+};
+
+app.use(cors(corsOptions));
+
   
   const corsOptions = {
     origin: (origin, callback) => {
