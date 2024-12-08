@@ -16,26 +16,23 @@ const app = express();
 
 app.use(express.json());
 const allowedOrigins = [
-    'http://localhost:5173',
-    'https://zealous-grass-0d6c91f1e.4.azurestaticapps.net'
+    'http://localhost:5173', 
+    'https://zealous-grass-0d6c91f1e.4.azurestaticapps.net',
+    
   ];
   
   const corsOptions = {
     origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
-        // Allow requests with no origin (like mobile apps or curl requests) or allowed origins
-        callback(null, true);
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true); 
       } else {
-        callback(new Error('Not allowed by CORS'));
+        callback(new Error('Not allowed by CORS')); 
       }
     },
-    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Specify allowed HTTP methods
-    allowedHeaders: ['Content-Type', 'Authorization'], // Specify allowed headers
-    credentials: true, // Allow credentials
+    credentials: true, 
   };
   
   app.use(cors(corsOptions));
-  
 
 const winston = require('winston');
 
