@@ -15,18 +15,7 @@ require("./db/config");
 const app = express();
 
 app.use(express.json());
-const allowedOrigins = [
-  'http://localhost:5173', 
-  'https://zealous-grass-0d6c91f1e.4.azurestaticapps.net'
-];
-
-const corsOptions = {
-  origin: allowedOrigins,
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],  
-  allowedHeaders: ['Content-Type', 'Authorization'],  
-};
-
-app.use(cors(corsOptions));
+app.use(cors({ origin: "*" })); 
 
   
    
