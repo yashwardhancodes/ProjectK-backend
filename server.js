@@ -77,10 +77,26 @@ app.post("/adminLogin", async (req, res) => {
 
 // Add Bike
 app.post("/addBike", async (req, res) => {
-    const newBike = new Bike(req.body);
-    const result = await newBike.save();
-    res.send(result);
-});
+    try {
+      const { bikeNo } = req.body;
+  
+      // Check if a bike with the same number already exists
+      const existingBike = await Bike.findOne({ bikeNo });
+  
+      if (existingBike) {
+        return res.status(400).json({ message: "Bike already exists" });
+      }
+  
+      // If not, create and save the new bike
+      const newBike = new Bike(req.body);
+      const result = await newBike.save();
+  
+      res.status(201).json({ message: "Bike added successfully", result });
+    } catch (error) {
+      res.status(500).json({ message: "Server error", error: error.message });
+    }
+  });
+  
 
 // Get All Bikes (Admin Panel)
 app.get("/adminPanel", async (req, res) => {
