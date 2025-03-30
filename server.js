@@ -22,26 +22,16 @@ const allowedOrigins = [
 
 const corsOptions = {
   origin: allowedOrigins,
-  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Specify allowed HTTP methods
-  allowedHeaders: ['Content-Type', 'Authorization'], // Specify allowed headers
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],  
+  allowedHeaders: ['Content-Type', 'Authorization'],  
 };
 
 app.use(cors(corsOptions));
 
   
-  const corsOptions = {
-    origin: (origin, callback) => {
-      if (allowedOrigins.includes(origin)) {
-        callback(null, true); 
-      } else {
-        callback(new Error('Not allowed by CORS')); 
-      }
-    },
-    credentials: true, 
-  };
+   
   
-  app.use(cors(corsOptions));
-
+ 
 const winston = require('winston');
 
 // Configure logger
@@ -139,7 +129,20 @@ app.put("/adminPanel/:id",async(req,res)=>{
         {$set:req.body}
     );
     res.send(result)
-})
+});
+
+//count no. of bikes 
+app.get('/count', async (req, res) => {
+    try {
+        const count = await Bike.countDocuments(); 
+        const bookingCount = await booking.countDocuments();
+        res.json({ count,bookingCount });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
 
 // Get Bike Details with Populated Services and Bills
 app.get("/adminPanel/bikes/:id", async (req, res) => {
@@ -211,11 +214,9 @@ app.delete("/adminPanel/:bikeId/:serviceId/deleteService", async (req, res) => {
             return res.status(404).send({ message: "Service not found" });
         }
 
-        // Delete the service
-        await Service.findByIdAndDelete(serviceId);
+         await Service.findByIdAndDelete(serviceId);
 
-        // Optionally delete the associated bill
-        if (service.bill) {
+         if (service.bill) {
             await Bill.findByIdAndDelete(service.bill);
         }
 
@@ -328,6 +329,16 @@ app.post("/adminPanel/bikes/:bikeId/:serviceId/bill/entry", async (req, res) => 
         res.status(500).json({ message: "An error occurred while adding the bill entry." });
     }
 });
+
+app.get("/bookings", async (req, res) => {
+    try {
+      const bookings = await booking.find();
+      res.json(bookings);
+    } catch (err) {
+      res.status(500).json({ message: err.message });
+    }
+  });
+  
 
 const port = process.env.PORT ;
 app.listen(port, () => {
